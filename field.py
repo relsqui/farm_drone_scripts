@@ -1,16 +1,12 @@
 import drone
 import maze
+import nav
 import plan
 import upgrade
 
-def go_to_origin():
-    while get_pos_x() != 0:
-        move(West)
-    while get_pos_y() != 0:
-        move(South)
 
 def clear():
-    go_to_origin()
+    nav.go_origin()
     drones = []
     for x in range(get_world_size()):
         task = drone.make_column_task(drone.harvest_task)

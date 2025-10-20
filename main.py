@@ -1,15 +1,14 @@
 import drone
 import field
-import hat
 import maze
-import plan
+import nav
 import upgrade
 
 pet_the_piggy()
 if get_entity_type() == Entities.Hedge:
   # In case we stopped running mid-maze
   maze.run()
-field.go_to_origin()
+nav.go_origin()
 do_a_flip()
 
 while True:
@@ -22,4 +21,4 @@ while True:
       field.clear()
       while maze.should_start_maze():
         maze.init_and_run()
-      field.go_to_origin()
+      nav.go_origin()

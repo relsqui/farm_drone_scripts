@@ -1,5 +1,6 @@
 import field
 import plan
+import nav
 
 def spawn_or_do(task):
   if num_drones() < max_drones():
@@ -24,9 +25,19 @@ def await_all(drones):
     if drone:
       wait_for(drone)
 
-def make_area_task(fn, x0, y0, x1, y1, args = []):
+def make_area_task(x0, y0, x1, y1, fn, initial_state = {}):
+  # currently x0, y0 should be NW of x1, y1
   def task():
-    fn(x0, y0, x1, y1, args)
+    state = initial_state
+    dir = East
+    goal = {East: x1, West: x0}
+    nav.go_to(x0, y0)
+    while get_pos_y() <= y1:
+      while get_pos_x() != goal[dir]:
+        state = fn(state)
+        move(dir)
+      dir = nav.opposite[dir]
+      move(South)
   return task
 
 def make_column_task(fn):
