@@ -25,32 +25,39 @@ def await_all(drones):
     if drone:
       wait_for(drone)
 
-def run_if_present(state, fn):
-  if fn in state:
-    state[fn](state)
-  return state
+def run_if_present(task_def, fn):
+  if fn in task_def:
+    task_def[fn](task_def["state"])
 
-def make_area_task(task_state):
-  # currently x0, y0 should be NW of x1, y1
+def present_and_true(task_def, fn):
+  return fn in task_def and task_def[fn](task_def["state"])
+
+def make_area_task(task_def):
+  if "state" not in task_def:
+    task_def["state"] = {}
+
   def task():
-    state = task_state
-    x0, y0 = state["from"]
-    x1, y1 = state["to"]
+    x0, y0 = min(task_def["from"][0], task_def["to"][0]), min(task_def["from"][1], task_def["to"][1]), 
+    x1, y1 = max(task_def["from"][0], task_def["to"][0]), max(task_def["from"][1], task_def["to"][1]), 
     while True:
-      state = run_if_present(state, "start_fn")
+      nav.go_to(x0, y0)
+      run_if_present(task_def, "start_fn")
       dir = East
       goal = {East: x1, West: x0}
-      nav.go_to(x0, y0)
-      while get_pos_y() >= y1:
-        state = run_if_present(state, "task_fn")
+      while get_pos_y() <= y1:
+        if present_and_true(task_def, "break_fn"):
+          break
+        run_if_present(task_def, "task_fn")
         while get_pos_x() != goal[dir]:
+          if present_and_true(task_def, "break_fn"):
+            break
           move(dir)
-          state = run_if_present(state, "task_fn")
+          run_if_present(task_def, "task_fn")
         dir = nav.opposite[dir]
-        move(South)
-      if not ("continue_fn" in state and state["continue_fn"](state)):
+        move(North)
+      if not present_and_true(task_def, "continue_fn"):
         break
-    run_if_present(state, "end_fn")
+    run_if_present(task_def, "end_fn")
   return task
 
 def make_column_task(fn):
