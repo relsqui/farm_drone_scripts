@@ -26,10 +26,16 @@ def randomize_hat():
   change_hat(hat)
   previous_hat = hat
 
+last_printed = ""
 def set_hat_for_upgrade(upgrade):
   if upgrade in hat_by_upgrade:
     hat = hat_by_upgrade[upgrade]
     if hat in get_available_hats():
       change_hat(hat)
       return
+    elif upgrade != last_printed:
+      print("Don't have the right hat for", upgrade)
+  elif upgrade != last_printed:
+    print("Don't know what hat to wear for", upgrade)
+  last_printed = upgrade
   change_hat(Hats.Straw_Hat)  
