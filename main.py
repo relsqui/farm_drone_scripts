@@ -10,7 +10,6 @@ if get_entity_type() == Entities.Hedge:
   # In case we stopped running mid-maze
   maze.run()
 field.go_to_origin()
-hat.randomize_hat()
 do_a_flip()
 
 while True:
@@ -18,7 +17,6 @@ while True:
         task = drone.make_column_task(drone.replant_task)
         drone.spawn_or_do(task)
         move(East)
-    hat.randomize_hat()
     upgrade.check_upgrades()
     if maze.should_start_maze():
       field.clear()

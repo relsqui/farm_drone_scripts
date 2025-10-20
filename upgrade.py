@@ -1,3 +1,5 @@
+import hat
+
 desired_upgrades = [
   Unlocks.Grass,
   Unlocks.Trees,
@@ -30,6 +32,7 @@ def get_next_upgrade_cost():
         if next_upgrade == None or remaining_cost < items_needed:
             next_upgrade = upgrade
             items_needed = remaining_cost
+    hat.set_hat_for_upgrade(next_upgrade)
     return costs[next_upgrade]
 
 def can_afford(cost):
