@@ -1,4 +1,5 @@
 import field
+import plan
 
 def spawn_or_do(task):
   if num_drones() < max_drones():
@@ -38,10 +39,10 @@ def make_column_task(fn):
       move(North)
   return task
 
-def make_replant_task(crop = None):
-    def task():
-      if can_harvest():
-        harvest()
-      if crop:
-        field.plant_crop(crop)
-    return task
+def replant_task():
+  harvest_task()
+  field.plant_crop(plan.get_next_crop())
+
+def harvest_task():
+  if can_harvest():
+    harvest()

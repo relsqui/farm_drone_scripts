@@ -15,8 +15,7 @@ do_a_flip()
 
 while True:
     for x in range(get_world_size()):
-        next_crop = plan.get_next_crop()
-        task = drone.make_column_task(drone.make_replant_task(next_crop))
+        task = drone.make_column_task(drone.replant_task)
         drone.spawn_or_do(task)
         move(East)
     hat.randomize_hat()

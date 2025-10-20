@@ -13,7 +13,7 @@ def clear():
     go_to_origin()
     drones = []
     for x in range(get_world_size()):
-        task = drone.make_column_task(drone.make_replant_task())
+        task = drone.make_column_task(drone.harvest_task)
         drones.append(drone.spawn_or_do(task))
         move(East)
     drone.await_all(drones)
@@ -25,8 +25,6 @@ def plant_crop(crop):
   maybe_fertilize()
 
 def maybe_water():
-    # Crop growth speed is not currently a limiting factor
-    return
     if get_water() < 0.75 and num_items(Items.Water) > 1:
         use_item(Items.Water) 
 
