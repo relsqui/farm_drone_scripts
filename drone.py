@@ -25,19 +25,32 @@ def await_all(drones):
     if drone:
       wait_for(drone)
 
-def make_area_task(x0, y0, x1, y1, fn, initial_state = {}):
+def run_if_present(state, fn):
+  if fn in state:
+    state[fn](state)
+  return state
+
+def make_area_task(task_state):
   # currently x0, y0 should be NW of x1, y1
   def task():
-    state = initial_state
-    dir = East
-    goal = {East: x1, West: x0}
-    nav.go_to(x0, y0)
-    while get_pos_y() <= y1:
-      while get_pos_x() != goal[dir]:
-        state = fn(state)
-        move(dir)
-      dir = nav.opposite[dir]
-      move(South)
+    state = task_state
+    x0, y0 = state["from"]
+    x1, y1 = state["to"]
+    while True:
+      state = run_if_present(state, "start_fn")
+      dir = East
+      goal = {East: x1, West: x0}
+      nav.go_to(x0, y0)
+      while get_pos_y() >= y1:
+        state = run_if_present(state, "task_fn")
+        while get_pos_x() != goal[dir]:
+          move(dir)
+          state = run_if_present(state, "task_fn")
+        dir = nav.opposite[dir]
+        move(South)
+      if not ("continue_fn" in state and state["continue_fn"](state)):
+        break
+    run_if_present(state, "end_fn")
   return task
 
 def make_column_task(fn):
