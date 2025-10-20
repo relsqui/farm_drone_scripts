@@ -1,6 +1,6 @@
 import drone
-import field
 import plan
+import upgrade
 
 right = {
     North: East,
@@ -20,16 +20,7 @@ def get_substance_needed():
     return get_world_size() * 2**(num_unlocked(Unlocks.Mazes) - 1)
 
 def should_start_maze():
-    return len(plan.get_missing_requirements()) == 0 and num_items(Items.Weird_Substance) >= get_substance_needed()
-
-def clear():
-    field.go_to_origin()
-    drones = []
-    for x in range(get_world_size()):
-        task = drone.make_column_task(drone.make_replant_task())
-        drones.append(drone.spawn_or_do(task))
-        move(East)
-    drone.await_all(drones)
+    return len(plan.get_missing_requirements()) == 0 and num_items(Items.Weird_Substance) >= get_substance_needed() and Items.Gold in upgrade.get_next_upgrade_cost()
 
 def init():
     harvest()

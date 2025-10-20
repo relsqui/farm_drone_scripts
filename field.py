@@ -1,3 +1,4 @@
+import drone
 import maze
 import plan
 import upgrade
@@ -7,6 +8,15 @@ def go_to_origin():
         move(West)
     while get_pos_y() != 0:
         move(South)
+
+def clear():
+    go_to_origin()
+    drones = []
+    for x in range(get_world_size()):
+        task = drone.make_column_task(drone.make_replant_task())
+        drones.append(drone.spawn_or_do(task))
+        move(East)
+    drone.await_all(drones)
 
 def plant_crop(crop):
   if get_ground_type() != Grounds.Soil:

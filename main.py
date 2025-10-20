@@ -1,9 +1,8 @@
+import drone
 import field
 import hat
 import maze
 import plan
-import pumpkin
-import sunflower
 import upgrade
 
 pet_the_piggy()
@@ -14,31 +13,16 @@ field.go_to_origin()
 hat.randomize_hat()
 do_a_flip()
 
-sunflower_sizes = []
 while True:
-    seen_pumpkins = 0
     for x in range(get_world_size()):
-        for y in range(get_world_size()):
-            next_crop = plan.get_next_crop()
-            if can_harvest():
-                planted = get_entity_type()
-                if planted == Entities.Pumpkin:
-                    seen_pumpkins = pumpkin.maybe_harvest_pumpkin(seen_pumpkins)
-                elif planted == Entities.Sunflower:
-                    sunflower_sizes = sunflower.maybe_harvest_sunflower(sunflower_sizes)
-                else:
-                    harvest()
-            if get_entity_type() != next_crop:
-                field.plant_crop(next_crop)
-                if next_crop == Entities.Sunflower:
-                    sunflower_sizes.append(measure())
-            field.maybe_water()
-            move(North)
+        next_crop = plan.get_next_crop()
+        task = drone.make_column_task(drone.make_replant_task(next_crop))
+        drone.spawn_or_do(task)
         move(East)
     hat.randomize_hat()
     upgrade.check_upgrades()
-    if seen_pumpkins < 2 and maze.should_start_maze():
-      maze.clear()
+    if maze.should_start_maze():
+      field.clear()
       while maze.should_start_maze():
         maze.init_and_run()
       field.go_to_origin()
