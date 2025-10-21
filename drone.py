@@ -98,10 +98,6 @@ def make_area_plant_task(from_xy, to_xy, crop):
     "task_fn": make_plant_step(crop)
   })
 
-def replant_task():
-  field.clear_and_plant_crop(plan.get_next_crop())
-  field.maybe_fertilize()
-
 def harvest_task():
   if can_harvest():
     harvest()

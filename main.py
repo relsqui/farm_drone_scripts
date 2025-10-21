@@ -3,6 +3,7 @@ import field
 import maze
 import nav
 import plan
+import task_pumpkin
 import upgrade
 
 pet_the_piggy()
@@ -11,6 +12,12 @@ if get_entity_type() == Entities.Hedge:
   maze.run()
 nav.go_origin()
 do_a_flip()
+
+def get_task_for_product(from_xy, to_xy, product):
+  if product in plan.producer:
+    return drone.make_area_plant_task(from_xy, to_xy, plan.producer[product])
+  elif product == Entities.Pumpkin:
+    return task_pumpkin.make_pumpkin_task(from_xy, to_xy)
 
 def check_constraints(index, product, from_xy, to_xy):
   # Ensure only one sunflower field by only allowing it and only it at index 0
@@ -32,14 +39,13 @@ while True:
     products = list(plan.producer)
     for i in range(len(subfields)):
       from_xy, to_xy = subfields[i]
-      product = None
       if i == 0:
         product = Items.Power
       else:
-        while not check_constraints(i, product, from_xy, to_xy):
+        product = plan.get_needed_product()
+        while product not in products or not check_constraints(i, product, from_xy, to_xy):
           product = products[random() * len(products) // 1]
-      task = drone.make_area_plant_task(from_xy, to_xy, plan.producer[product])
-      spawn_drone(task)
+      drone.spawn_or_do(get_task_for_product(from_xy, to_xy, product))
     upgrade.check_upgrades()
     if maze.should_start_maze():
       field.clear()

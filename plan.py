@@ -1,4 +1,4 @@
-import pumpkin
+import task_pumpkin
 import upgrade
 
 min_required = {
@@ -14,8 +14,7 @@ producer = {
   Items.Carrot: Entities.Carrot,
   Items.Hay: Entities.Grass,
   Items.Power: Entities.Sunflower,
-  Items.Cactus: Entities.Cactus,
-  Items.Pumpkin: Entities.Pumpkin
+  Items.Cactus: Entities.Cactus
 }
 
 def get_missing_requirements():
@@ -46,16 +45,3 @@ def get_needed_product():
       min_stock = stock
       min_item = item
   return min_item
-
-def get_next_crop():
-  x, y = get_pos_x(), get_pos_y()
-  needed_product = get_needed_product()
-
-  if pumpkin.in_pumpkin_zone(x, y):
-    return Entities.Pumpkin
-  elif needed_product == Items.Wood:
-    if (x % 2) + (y % 2) == 1:
-      return Entities.Tree
-    else:
-      return Entities.Bush
-  return producer[needed_product]
