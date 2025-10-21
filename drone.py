@@ -7,6 +7,7 @@ def spawn_or_do(task):
     return spawn_drone(task)
   else:
     task()
+    return None
 
 def all_finished(drones):
     if drones == None:
@@ -25,10 +26,14 @@ def await_all(drones):
     if drone:
       wait_for(drone)
 
-def noop(state):
+def await_any():
+  while num_drones() >= max_drones():
+    do_a_flip()
+
+def noop(_):
   pass
 
-def return_false(state):
+def return_false(_):
   return False
 
 base_task = {

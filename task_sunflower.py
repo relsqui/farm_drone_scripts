@@ -21,7 +21,6 @@ def harvest_sunflowers(state):
             harvest()
         petals -= 1
 
-
 def make_sunflower_task(from_xy, to_xy):
     return drone.make_area_task({
         "from": from_xy,
