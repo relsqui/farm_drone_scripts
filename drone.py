@@ -27,7 +27,7 @@ def await_all(drones):
 
 def await_any():
   while num_drones() >= max_drones():
-    do_a_flip()
+    pass
 
 def noop(_):
   pass

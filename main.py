@@ -28,7 +28,8 @@ def get_task_for_product(from_xy, to_xy, product):
 
 def currently_growing(product, assignments):
   for i in assignments:
-    if assignments[i][0] == product:
+    p, d = assignments[i]
+    if p == product and not has_finished(d):
       return True
   return False
 
@@ -71,9 +72,8 @@ while True:
           product = p
           break
       drone.await_any()
-      drone_ref = drone.spawn_or_do(get_task_for_product(from_xy, to_xy, product))
-      if drone_ref:
-        assignments[i] = (product, drone_ref)
+      drone_ref = spawn_drone(get_task_for_product(from_xy, to_xy, product))
+      assignments[i] = (product, drone_ref)
     upgrade.check_upgrades()
     if maze.should_start_maze():
       drone.await_all(assigned_drones(assignments))

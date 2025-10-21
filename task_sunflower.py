@@ -1,6 +1,7 @@
 import drone
 import field
 import nav
+import plan
 
 def plant_sunflower(state):
     field.plant_if_necessary(Entities.Sunflower)
@@ -21,12 +22,16 @@ def harvest_sunflowers(state):
             harvest()
         petals -= 1
 
+def enough_sunflowers(state):
+    return num_items(Items.Power) > 2 * plan.min_required[Items.Power]
+
 def make_sunflower_task(from_xy, to_xy):
     return drone.make_area_task({
         "from": from_xy,
         "to": to_xy,
         "task_fn": plant_sunflower,
         "end_fn": harvest_sunflowers,
+        "continue_fn": enough_sunflowers,
         "state": {
             "sizes": {}
         }
