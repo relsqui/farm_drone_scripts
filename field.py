@@ -4,6 +4,18 @@ import nav
 import plan
 import upgrade
 
+def get_subfield_corners(margin = 0):
+    repeats = ((max_drones() ** 0.5) // 1) + 1
+    spacing = get_world_size() // repeats
+    offset = spacing - margin - 1
+    subfields = []
+    for x in range(repeats):
+      for y in range(repeats):
+        subfields.append((
+          (x * spacing, y * spacing),
+          ((x * spacing) + offset, (y * spacing) + offset)
+        ))
+    return subfields
 
 def clear():
     nav.go_origin()

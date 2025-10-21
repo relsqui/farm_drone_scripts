@@ -5,7 +5,7 @@ hat_by_upgrade = {
     Unlocks.Watering: Hats.Purple_Hat,
     Unlocks.Pumpkins: Hats.Pumpkin_Hat,
     Unlocks.Megafarm: Hats.Gray_Hat,
-    Unlocks.Cactus: Hats.Cactus_Hat,
+    Unlocks.Cactus: Hats.Brown_Hat,
     Unlocks.Mazes: Hats.Gold_Hat
 }
 
@@ -18,8 +18,8 @@ def get_available_hats():
 
 previous_hat = None
 def randomize_hat():
-  hats = get_available_hats()
   global previous_hat
+  hats = get_available_hats()
   hat = previous_hat
   while hat == previous_hat:
     hat = hats[(random() * len(hats)) // 1]
@@ -28,6 +28,7 @@ def randomize_hat():
 
 last_printed = ""
 def set_hat_for_upgrade(upgrade):
+  global last_printed
   if upgrade in hat_by_upgrade:
     hat = hat_by_upgrade[upgrade]
     if hat in get_available_hats():

@@ -22,10 +22,10 @@ def check_pumpkins(state):
         state["to_check"] = check_next
     harvest()
 
-def make_pumpkin_task(x, y, size):
+def make_pumpkin_task(from_xy, to_xy):
     return drone.make_area_task({
-        "from": (x, y),
-        "to": (x + size - 1, y + size - 1),
+        "from": from_xy,
+        "to": to_xy,
         "task_fn": plant_pumpkin,
         "end_fn": check_pumpkins,
         "state": {
@@ -34,9 +34,5 @@ def make_pumpkin_task(x, y, size):
     })
 
 def spawn_pumpkin_patch():
-    repeats = ((max_drones() ** 0.5) // 1) + 1
-    spacing = get_world_size() // repeats
-    size = spacing - 1
-    for x in range(repeats):
-        for y in range(repeats):
-            drone.spawn_or_do(make_pumpkin_task(x * spacing, y * spacing, size))
+    for from_xy, to_xy in field.get_subfield_corners(1):
+        drone.spawn_or_do(make_pumpkin_task(from_xy, to_xy))
