@@ -59,12 +59,11 @@ def make_area_task(task_options):
       nav.go_to(x0, y0)
       task_def["start_fn"](state)
       dir = East
-      goal = {East: x1, West: x0}
-      while get_pos_y() <= y1:
+      for _y in range(y1 - y0 + 1):
         if task_def["break_fn"](state):
           break
         task_def["task_fn"](state)
-        while get_pos_x() != goal[dir]:
+        for _x in range(x1 - x0):
           if task_def["break_fn"](state):
             break
           move(dir)
