@@ -67,10 +67,18 @@ def plant_crop(crop):
     till()
   plant(crop)
 
-def clear_and_plant_crop(crop):
+def clear_and_plant_crop(crop, force = False):
   if can_harvest():
     harvest()
+  elif force:
+    till()
   plant_crop(crop)
+
+def plant_if_necessary(crop):
+    if get_entity_type() != crop:
+        clear_and_plant_crop(crop, True)
+        return True
+    return False
 
 def maybe_water():
     if get_water() < 0.75 and num_items(Items.Water) > 1:

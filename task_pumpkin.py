@@ -2,14 +2,8 @@ import drone
 import field
 import nav
 
-def plant_if_necessary():
-    if get_entity_type() != Entities.Pumpkin:
-        field.clear_and_plant_crop(Entities.Pumpkin)
-        return True
-    return False
-
 def plant_pumpkin(state):
-    if plant_if_necessary():
+    if field.plant_if_necessary(Entities.Pumpkin):
         state["to_check"].append((get_pos_x(), get_pos_y()))
 
 def check_pumpkins(state):
@@ -17,7 +11,7 @@ def check_pumpkins(state):
         check_next = []
         for x, y in state["to_check"]:
             nav.go_to(x, y)
-            if plant_if_necessary() or not can_harvest():
+            if field.plant_if_necessary(Entities.Pumpkin) or not can_harvest():
                 check_next.append((x, y))
         state["to_check"] = check_next
     harvest()
