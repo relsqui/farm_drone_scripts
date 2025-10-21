@@ -77,27 +77,23 @@ def clear_and_plant_crop(crop, force = False):
   plant_crop(crop)
 
 def plant_if_necessary(crop):
-    if get_entity_type() != crop:
-        clear_and_plant_crop(crop, True)
-        return True
-    return False
+  if get_entity_type() != crop:
+    clear_and_plant_crop(crop, True)
+    return True
+  return False
 
 def maybe_water():
-    while get_water() < 0.75 and num_items(Items.Water) > 1:
-        use_item(Items.Water) 
+  while get_water() < 0.75 and num_items(Items.Water) > 1:
+    use_item(Items.Water)
 
 def maybe_fertilize():
   if get_entity_type() in plan.get_missing_requirements():
-      return
+    return
   if num_unlocked(Unlocks.Mazes) == 0:
     return
   if num_items(Items.Fertilizer) == 0:
     return
   if num_items(Items.Weird_Substance) > maze.get_substance_needed():
     return
-  costs = upgrade.get_upgrade_costs()
-  for key in costs:
-    cost = costs[key]
-    if Items.Gold in cost and num_items(Items.Gold) < cost[Items.Gold]:
-      use_item(Items.Fertilizer)
-      return
+  if Items.Gold in plan.get_priorities():
+    use_item(Items.Fertilizer)

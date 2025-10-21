@@ -64,13 +64,16 @@ while True:
           continue
       from_xy, to_xy = subfields[i]
       product = Items.Hay
+      if not currently_growing(Items.Power, assignments):
+        product = Items.Power
       for p in plan.get_priorities():
         if check_constraints(i, p, from_xy, to_xy, assignments):
           product = p
           break
       drone.await_any()
-      drone_ref = spawn_drone(get_task_for_product(from_xy, to_xy, product))
-      assignments[i] = (product, drone_ref)
+      drone_ref = drone.spawn_or_do(get_task_for_product(from_xy, to_xy, product))
+      if drone_ref:
+        assignments[i] = (product, drone_ref)
     upgrade.check_upgrades()
     if maze.should_start_maze():
       drone.await_all(assigned_drones(assignments))

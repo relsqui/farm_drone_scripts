@@ -1,13 +1,12 @@
 import drone
 import nav
 import plan
-import upgrade
 
 def get_substance_needed():
     return get_world_size() * 2**(num_unlocked(Unlocks.Mazes) - 1)
 
 def should_start_maze():
-    return plan.plenty_of_stock() and num_items(Items.Weird_Substance) >= get_substance_needed() and Items.Gold in upgrade.get_next_upgrade_cost()
+    return plan.plenty_of_stock() and num_items(Items.Weird_Substance) >= get_substance_needed() and Items.Gold in plan.get_priorities()
 
 def init():
     harvest()
