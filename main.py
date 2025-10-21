@@ -16,22 +16,19 @@ def get_task_for_product(from_xy, to_xy, product):
     return task_sunflower.make_sunflower_task(from_xy, to_xy)
 
 def currently_growing(product, assignments):
-  for assignment in assignments:
-    if assignment[0] == product:
+  for i in assignments:
+    if assignments[i][0] == product:
       return True
   return False
 
 def check_constraints(index, product, from_xy, to_xy, assignments):
-  # Ensure only one sunflower field at a time
   if product == Items.Power:
-    return Items.Power in assignments
-  # Ensure cactus fields aren't adjacent to each other
+    return not currently_growing(Items.Power, assignments)
   if product == Items.Cactus:
     return field.get_adjacency(index) == 0
-  # Same for pumpkins, and that they're not in the non-square edge fields
   if product == Items.Pumpkin:
     return field.get_adjacency(index) == 1 and field.is_square(from_xy, to_xy)
-  return product != None
+  return True
 
 
 pet_the_piggy()
@@ -47,6 +44,7 @@ while True:
       if i in assignments:
         drone_ref = assignments[i][1]
         if drone_ref != None and not has_finished(drone_ref):
+          print(i, assignments[i], "isn't done yet")
           continue
       from_xy, to_xy = subfields[i]
       product = plan.get_needed_product()
@@ -56,7 +54,8 @@ while True:
       assignments[i] = (product, drone_ref)
     upgrade.check_upgrades()
     if maze.should_start_maze():
-      for _, drone_ref in assignments:
+      for i in assignments:
+        _, drone_ref = assignments[i]
         if drone_ref != None:
           wait_for(drone_ref)
       field.clear()

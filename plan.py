@@ -5,7 +5,7 @@ min_required = {
   Items.Carrot: 1000,
   Items.Hay: 1000,
   Items.Wood: 1000,
-  Items.Power: 100
+  Items.Power: 1000
 }
 
 item_priority = [Items.Hay, Items.Wood, Items.Carrot, Items.Power]
