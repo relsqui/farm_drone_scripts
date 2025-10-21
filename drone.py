@@ -1,5 +1,4 @@
 import field
-import plan
 import nav
 
 def spawn_or_do(task):

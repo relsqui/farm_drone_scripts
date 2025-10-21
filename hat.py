@@ -5,7 +5,7 @@ hat_by_upgrade = {
     Unlocks.Watering: Hats.Purple_Hat,
     Unlocks.Pumpkins: Hats.Pumpkin_Hat,
     Unlocks.Megafarm: Hats.Gray_Hat,
-    Unlocks.Cactus: Hats.Brown_Hat,
+    Unlocks.Cactus: Hats.Cactus_Hat,
     Unlocks.Mazes: Hats.Gold_Hat
 }
 

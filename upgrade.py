@@ -23,6 +23,15 @@ def remaining_item_cost(cost):
         sum += cost[item] - num_items(item)
     return sum
 
+def get_all_missing_products():
+    products = set()
+    for upgrade in desired_upgrades:
+        cost = get_cost(upgrade)
+        for product in cost:
+            if num_items(product) < cost[product]:
+                products.add(product)
+    return products
+
 def get_next_upgrade_cost():
     costs = get_upgrade_costs()
     next_upgrade = None

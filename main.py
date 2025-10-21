@@ -6,13 +6,25 @@ import task_pumpkin
 import task_sunflower
 import upgrade
 
+product_task = {
+  Items.Pumpkin: task_pumpkin.make_pumpkin_task,
+  Items.Power: task_sunflower.make_sunflower_task
+}
+
+producer = {
+  Items.Carrot: Entities.Carrot,
+  Items.Hay: Entities.Grass,
+  Items.Power: Entities.Sunflower,
+  Items.Cactus: Entities.Cactus,
+  Items.Pumpkin: Entities.Pumpkin
+}
+
 def get_task_for_product(from_xy, to_xy, product):
-  if product == Items.Pumpkin:
-    return task_pumpkin.make_pumpkin_task(from_xy, to_xy)
-  elif product == Items.Power:
-    return task_sunflower.make_sunflower_task(from_xy, to_xy)
-  else:
-    return drone.make_area_plant_task(from_xy, to_xy, plan.producer[product])
+  if product in product_task:
+    return product_task[product](from_xy, to_xy)
+  if product in producer:
+    return drone.make_area_plant_task(from_xy, to_xy, producer[product])
+  return None
 
 def currently_growing(product, assignments):
   for i in assignments:
@@ -21,6 +33,8 @@ def currently_growing(product, assignments):
   return False
 
 def check_constraints(index, product, from_xy, to_xy, assignments):
+  if product not in product_task and product not in producer:
+    return False
   if product == Items.Power:
     return not currently_growing(Items.Power, assignments)
   if product == Items.Cactus:
@@ -44,15 +58,16 @@ if get_entity_type() == Entities.Hedge:
 assignments = {}
 while True:
     subfields = field.get_subfield_corners()
-    products = list(plan.producer)
     for i in range(len(subfields)):
       if i in assignments:
         if not has_finished(assignments[i][1]):
           continue
       from_xy, to_xy = subfields[i]
-      product = plan.get_needed_product()
-      while product not in products or not check_constraints(i, product, from_xy, to_xy, assignments):
-        product = products[random() * len(products) // 1]
+      product = Items.Hay
+      for p in plan.get_priorities():
+        if check_constraints(i, p, from_xy, to_xy, assignments):
+          product = p
+          break
       drone.await_any()
       drone_ref = spawn_drone(get_task_for_product(from_xy, to_xy, product))
       assignments[i] = (product, drone_ref)

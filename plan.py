@@ -1,21 +1,22 @@
-import task_pumpkin
 import upgrade
 
+# How much buffer do we want to keep in stock?
+# (How much can we burn through between product checks)
 min_required = {
   Items.Carrot: 1000,
   Items.Hay: 1000,
   Items.Wood: 1000,
-  Items.Power: 1000
+  Items.Power: 200
 }
 
-item_priority = [Items.Hay, Items.Wood, Items.Carrot, Items.Power]
+# Prioritize stocking basics first to enable the rest
+item_priority = [Items.Power, Items.Hay, Items.Wood, Items.Carrot]
 
-producer = {
-  Items.Carrot: Entities.Carrot,
-  Items.Hay: Entities.Grass,
-  Items.Power: Entities.Sunflower,
-  Items.Cactus: Entities.Cactus
-}
+def plenty_of_stock():
+  for product in min_required:
+    if num_items(product) < min_required[product] * 2:
+      return False
+  return True
 
 def get_missing_requirements():
   missing = []
@@ -24,24 +25,12 @@ def get_missing_requirements():
       missing.append(item)
   return missing
 
-def get_needed_product():
-  required_items = get_missing_requirements()
-  if len(required_items) > 0:
-    return required_items[0]
-
-  min_stock = None
-  min_item = None
-  required_only = [Items.Power]
-  next_upgrade_cost = upgrade.get_next_upgrade_cost()
-  for item in item_priority:
-    stock = num_items(item)
-    if item in next_upgrade_cost and stock < next_upgrade_cost[item]:
-      return item
-    if item in required_only:
-      # Skip things we don't arbitrarily stock when not collecting them
-      continue
-    if min_stock == None or stock < min_stock:
-      # Then return whatever we have least of
-      min_stock = stock
-      min_item = item
-  return min_item
+def get_priorities():
+  products = get_missing_requirements()
+  for product in upgrade.get_next_upgrade_cost():
+    if product not in products:
+      products.append(product)
+  for product in upgrade.get_all_missing_products():
+    if product not in products:
+      products.append(product)
+  return products
