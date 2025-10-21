@@ -6,7 +6,7 @@ def get_substance_needed():
     return get_world_size() * 2**(num_unlocked(Unlocks.Mazes) - 1)
 
 def should_start_maze():
-    return len(plan.missing_requirements()) == 0 and num_items(Items.Weird_Substance) >= get_substance_needed() and Items.Gold in plan.get_priorities()
+    return len(plan.get_missing_requirements()) == 0 and num_items(Items.Weird_Substance) >= get_substance_needed() and Items.Gold in plan.get_priorities()
 
 def init():
     harvest()
