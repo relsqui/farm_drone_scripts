@@ -14,7 +14,8 @@ producer = {
   Items.Carrot: Entities.Carrot,
   Items.Hay: Entities.Grass,
   Items.Power: Entities.Sunflower,
-  Items.Cactus: Entities.Cactus
+  Items.Cactus: Entities.Cactus,
+  Items.Pumpkin: Entities.Pumpkin
 }
 
 def get_missing_requirements():
