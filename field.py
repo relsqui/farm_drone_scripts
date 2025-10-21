@@ -4,10 +4,21 @@ import nav
 import plan
 import upgrade
 
-def get_subfield_corners(margin = 0):
+def get_subfield_stats(margin = 0):
     repeats = ((max_drones() ** 0.5) // 1) + 1
     spacing = get_world_size() // repeats
-    offset = spacing - margin - 1
+    return {
+      "repeats": repeats,
+      "spacing": spacing,
+      "size": spacing - margin,
+      "offset": spacing - margin - 1
+    }
+
+def get_subfield_corners(margin = 0):
+    subfield_stats = get_subfield_stats(margin)
+    repeats = subfield_stats["repeats"]
+    spacing = subfield_stats["spacing"]
+    offset = subfield_stats["offset"]
     subfields = []
     for x in range(repeats):
       for y in range(repeats):

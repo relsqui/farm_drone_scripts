@@ -86,6 +86,19 @@ def make_column_task(fn):
       move(North)
   return task
 
+def make_plant_step(crop):
+  def step_fn(state):
+    field.clear_and_plant_crop(crop)
+    field.maybe_fertilize()
+  return step_fn
+
+def make_area_plant_task(from_xy, to_xy, crop):
+  return make_area_task({
+    "from": from_xy,
+    "to": to_xy,
+    "task_fn": make_plant_step(crop)
+  })
+
 def replant_task():
   field.clear_and_plant_crop(plan.get_next_crop())
   field.maybe_fertilize()
