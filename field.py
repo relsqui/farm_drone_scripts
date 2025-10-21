@@ -19,6 +19,11 @@ def plant_crop(crop):
     till()
   plant(crop)
 
+def clear_and_plant_crop(crop):
+  if can_harvest():
+    harvest()
+  plant_crop(crop)
+
 def maybe_water():
     if get_water() < 0.75 and num_items(Items.Water) > 1:
         use_item(Items.Water) 

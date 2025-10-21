@@ -87,8 +87,7 @@ def make_column_task(fn):
   return task
 
 def replant_task():
-  harvest_task()
-  field.plant_crop(plan.get_next_crop())
+  field.clear_and_plant_crop(plan.get_next_crop())
   field.maybe_fertilize()
 
 def harvest_task():

@@ -1,13 +1,10 @@
 import drone
+import field
 import nav
 
 def plant_if_necessary():
     if get_entity_type() != Entities.Pumpkin:
-        if can_harvest():
-            harvest()
-        if get_ground_type() != Grounds.Soil:
-            till()
-        plant(Entities.Pumpkin)
+        field.clear_and_plant_crop(Entities.Pumpkin)
         return True
     return False
 
