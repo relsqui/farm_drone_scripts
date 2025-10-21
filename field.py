@@ -18,7 +18,6 @@ def plant_crop(crop):
   if get_ground_type() != Grounds.Soil:
     till()
   plant(crop)
-  maybe_fertilize()
 
 def maybe_water():
     if get_water() < 0.75 and num_items(Items.Water) > 1:

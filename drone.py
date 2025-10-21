@@ -25,39 +25,55 @@ def await_all(drones):
     if drone:
       wait_for(drone)
 
-def run_if_present(task_def, fn):
-  if fn in task_def:
-    task_def[fn](task_def["state"])
+def noop(state):
+  pass
 
-def present_and_true(task_def, fn):
-  return fn in task_def and task_def[fn](task_def["state"])
+def return_false(state):
+  return False
 
-def make_area_task(task_def):
-  if "state" not in task_def:
-    task_def["state"] = {}
+base_task = {
+  "state": {},
+  "start_fn": noop,
+  "task_fn": noop,
+  "end_fn": noop,
+  "continue_fn": return_false,
+  "break_fn": return_false,
+}
+
+def normalize_task_def(task_options):
+  task_def = {}
+  for key in base_task:
+    task_def[key] = base_task[key]
+  for key in task_options:
+    task_def[key] = task_options[key]
+  return task_def
+
+def make_area_task(task_options):
+  task_def = normalize_task_def(task_options)
+  state = task_def["state"]
+  x0, y0 = min(task_def["from"][0], task_def["to"][0]), min(task_def["from"][1], task_def["to"][1])
+  x1, y1 = max(task_def["from"][0], task_def["to"][0]), max(task_def["from"][1], task_def["to"][1])
 
   def task():
-    x0, y0 = min(task_def["from"][0], task_def["to"][0]), min(task_def["from"][1], task_def["to"][1]), 
-    x1, y1 = max(task_def["from"][0], task_def["to"][0]), max(task_def["from"][1], task_def["to"][1]), 
     while True:
       nav.go_to(x0, y0)
-      run_if_present(task_def, "start_fn")
+      task_def["start_fn"](state)
       dir = East
       goal = {East: x1, West: x0}
       while get_pos_y() <= y1:
-        if present_and_true(task_def, "break_fn"):
+        if task_def["break_fn"](state):
           break
-        run_if_present(task_def, "task_fn")
+        task_def["task_fn"](state)
         while get_pos_x() != goal[dir]:
-          if present_and_true(task_def, "break_fn"):
+          if task_def["break_fn"](state):
             break
           move(dir)
-          run_if_present(task_def, "task_fn")
+          task_def["task_fn"](state)
         dir = nav.opposite[dir]
         move(North)
-      if not present_and_true(task_def, "continue_fn"):
+      if not task_def["continue_fn"](state):
         break
-    run_if_present(task_def, "end_fn")
+    task_def["end_fn"](state)
   return task
 
 def make_column_task(fn):
@@ -73,6 +89,7 @@ def make_column_task(fn):
 def replant_task():
   harvest_task()
   field.plant_crop(plan.get_next_crop())
+  field.maybe_fertilize()
 
 def harvest_task():
   if can_harvest():
