@@ -67,10 +67,11 @@ while True:
       product = Items.Hay
       if not currently_growing(Items.Power, assignments):
         product = Items.Power
-      for p in plan.get_priorities():
-        if check_constraints(i, p, from_xy, to_xy, assignments):
-          product = p
-          break
+      else:
+        for p in plan.get_priorities():
+          if check_constraints(i, p, from_xy, to_xy, assignments):
+            product = p
+            break
       drone.await_any()
       drone_ref = spawn_drone(get_task_for_product(from_xy, to_xy, product))
       assignments[i] = (product, drone_ref)

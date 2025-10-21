@@ -13,12 +13,16 @@ def plant_sunflower(state):
 def harvest_sunflowers(state):
     while num_items(Items.Power) < 2 * plan.min_required[Items.Power]:
         max_petals = max(list(state["sizes"]))
-        x, y = state["sizes"][max_petals][0]
-        nav.go_to(x, y)
-        while not can_harvest():
-            pass
-        harvest()
-        plant_sunflower(state)
+        for pos in state["sizes"][max_petals]:
+            x, y = pos
+            nav.go_to(x, y)
+            if not can_harvest():
+                continue
+            harvest()
+            state["sizes"][max_petals].remove(pos)
+            if len(state["sizes"][max_petals]) == 0:
+                state["sizes"].pop(max_petals)
+            plant_sunflower(state)
 
 def make_sunflower_task(from_xy, to_xy):
     return drone.make_area_task({
