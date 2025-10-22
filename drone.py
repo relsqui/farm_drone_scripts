@@ -19,9 +19,10 @@ def await_all(drones):
     if drone:
       wait_for(drone)
 
-def await_any():
+def await_any(fn = None):
   while num_drones() >= max_drones():
-    pass
+    if fn != None:
+      fn()
 
 def noop(_):
   pass

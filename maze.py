@@ -20,30 +20,26 @@ def check_treasure():
 def maze_done():
     return get_entity_type() not in {Entities.Hedge, Entities.Treasure}
 
-def available_moves(facing):
-    moves = []
-    for dir in {facing, nav.right[facing], nav.left[facing]}:
-        if can_move(dir):
-            moves.append(dir)
-    return moves
+def run(facing):
+    while can_move(facing):
+        if maze_done():
+            return
+        move(facing)
+        check_treasure()
+        for dir in {nav.right[facing], nav.left[facing]}:
+            send_drone(dir)
 
 def send_drone(facing):
+    if not can_move(facing):
+        return
     def task():
         run(facing)
-    drone.await_any()
+    drone.await_any(do_a_flip)
     spawn_drone(task)
-
-def run(facing):
-    while not maze_done():
-        check_treasure()
-        moves = available_moves(facing)
-        while len(moves) > 1:
-            send_drone(moves.pop())
-        if len(moves) > 0:
-            run(moves.pop())
 
 def init_and_run():
     init()
-    for dir in {South, East, West}:
+    check_treasure()
+    change_hat(Hats.Purple_Hat)
+    for dir in {North, South, East, West}:
         send_drone(dir)
-    run(North)
