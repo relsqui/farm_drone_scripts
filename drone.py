@@ -9,18 +9,12 @@ def spawn_or_do(task):
     return None
 
 def all_finished(drones):
-    if drones == None:
-        return False
     for drone in drones:
-        if has_finished(drone):
-            drones.remove(drone)
-        else:
+        if not has_finished(drone):
             return False
     return True
 
 def await_all(drones):
-  if drones == None:
-    return
   for drone in drones:
     if drone:
       wait_for(drone)

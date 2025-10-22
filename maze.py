@@ -13,26 +13,37 @@ def init():
     plant(Entities.Bush)
     use_item(Items.Weird_Substance, get_substance_needed())
 
-def run(facing = North, turn = nav.right, drones = None):
-    while get_entity_type() == Entities.Hedge and not drone.all_finished(drones):
-        facing = turn[facing]
-        while not can_move(facing):
-            facing = turn[turn[turn[facing]]]
-        move(facing)
+def check_treasure():
     if get_entity_type() == Entities.Treasure:
         harvest()
 
+def maze_done():
+    return get_entity_type() not in {Entities.Hedge, Entities.Treasure}
+
+def available_moves(facing):
+    moves = []
+    for dir in {facing, nav.right[facing], nav.left[facing]}:
+        if can_move(dir):
+            moves.append(dir)
+    return moves
+
+def send_drone(facing):
+    def task():
+        run(facing)
+    drone.await_any()
+    spawn_drone(task)
+
+def run(facing):
+    while not maze_done():
+        check_treasure()
+        moves = available_moves(facing)
+        while len(moves) > 1:
+            send_drone(moves.pop())
+        if len(moves) > 0:
+            run(moves.pop())
+
 def init_and_run():
     init()
-    drones = []
-    # odd numbers to get it out of phase with directions
-    turns = [nav.right, nav.right, nav.right, nav.left, nav.left, nav.left]
-    turn_i = 0
-    dir_i = 0
-    while num_drones() < max_drones():
-      def task():
-        run(nav.dirs[dir_i], turns[turn_i])
-      drones.append(spawn_drone(task))
-      dir_i = (dir_i + 1) % len(nav.dirs)
-      turn_i = (turn_i + 1) % len(turns)
-    run(nav.dirs[dir_i], turns[turn_i], drones)
+    for dir in {South, East, West}:
+        send_drone(dir)
+    run(North)
