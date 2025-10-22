@@ -2,7 +2,6 @@ import drone
 import maze
 import nav
 import plan
-import upgrade
 
 def get_subfield_stats(margin = 0):
     ws = get_world_size()

@@ -14,21 +14,23 @@ desired_upgrades = [
 def get_upgrade_costs():
     costs = {}
     for upgrade in desired_upgrades:
-        costs[upgrade] = get_cost(upgrade)
+        cost = get_cost(upgrade)
+        if len(cost) != 0:
+            costs[upgrade] = cost
     return costs
 
 def remaining_item_cost(cost):
     sum = 0
     for item in cost:
-        sum += cost[item] - num_items(item)
+        sum += max(0, cost[item] - num_items(item))
     return sum
 
 def get_all_missing_products():
     products = set()
-    for upgrade in desired_upgrades:
-        cost = get_cost(upgrade)
-        for product in cost:
-            if num_items(product) < cost[product]:
+    costs = get_upgrade_costs()
+    for upgrade in costs:
+        for product in costs[upgrade]:
+            if num_items(product) < costs[upgrade][product]:
                 products.add(product)
     return products
 
@@ -36,7 +38,7 @@ def get_next_upgrade_cost():
     costs = get_upgrade_costs()
     next_upgrade = None
     items_needed = 0
-    for upgrade in desired_upgrades:
+    for upgrade in costs:
         remaining_cost = remaining_item_cost(costs[upgrade])
         if next_upgrade == None or remaining_cost < items_needed:
             next_upgrade = upgrade
@@ -54,7 +56,7 @@ def can_afford(cost):
 
 def check_upgrades():
     costs = get_upgrade_costs()
-    for upgrade in desired_upgrades:
+    for upgrade in costs:
         if can_afford(costs[upgrade]):
             unlock(upgrade)
             print("Unlocked", upgrade)
