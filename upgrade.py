@@ -26,12 +26,16 @@ def remaining_item_cost(cost):
     return sum
 
 def get_all_missing_products():
-    products = set()
+    products = {}
     costs = get_upgrade_costs()
     for upgrade in costs:
         for product in costs[upgrade]:
-            if num_items(product) < costs[upgrade][product]:
-                products.add(product)
+            missing = max(0, costs[upgrade][product] - num_items(product))
+            if missing:
+                if product in products:
+                    products[product] = min(products[product], missing)
+                else:
+                    products[product] = missing
     return products
 
 def get_next_upgrade_cost():

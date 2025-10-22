@@ -27,7 +27,19 @@ def get_priorities():
   for product in upgrade.get_next_upgrade_cost():
     if product not in products:
       products.append(product)
-  for product in upgrade.get_all_missing_products():
+  for product in sort_keys_by_value(upgrade.get_all_missing_products()):
     if product not in products:
       products.append(product)
   return products
+
+def sort_keys_by_value(d):
+  values = []
+  keys = []
+  for k in d:
+    values.append(d[k])
+  while len(values) > 0:
+    for k in d:
+      if len(values) > 0 and d[k] == min(values):
+        keys.append(k)
+        values.remove(d[k])
+  return keys

@@ -53,14 +53,13 @@ def assigned_drones(assignments):
   return drones
 
 
-pet_the_piggy()
-if get_entity_type() == Entities.Hedge:
-  # In case we stopped running mid-maze
-  maze.run()
+def setup():
+  pet_the_piggy()
+  if get_entity_type() == Entities.Hedge:
+    # In case we stopped running mid-maze
+    maze.run()
 
-assignments = {}
-while True:
-    print(plan.get_priorities())
+def loop(assignments):
     subfields = field.get_subfield_corners()
     for i in range(len(subfields)):
       if i in assignments:
@@ -84,3 +83,10 @@ while True:
       field.clear()
       while maze.should_start_maze():
         maze.init_and_run()
+
+def main():
+  assignments = {}
+  while True:
+    loop(assignments)
+
+main()
