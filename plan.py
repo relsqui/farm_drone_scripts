@@ -15,12 +15,6 @@ preferred_power = 1000
 # Prioritize stocking basics first to enable the rest
 item_priority = [Items.Power, Items.Hay, Items.Wood, Items.Carrot]
 
-def plenty_of_stock():
-  for product in min_required:
-    if num_items(product) < min_required[product] * 2:
-      return False
-  return True
-
 def get_missing_requirements():
   missing = []
   for item in item_priority:
