@@ -28,6 +28,28 @@ def get_task_for_product(from_xy, to_xy, product):
     return drone.make_area_plant_task(from_xy, to_xy, producer[product])
   return None
 
+def get_field_cost(from_xy, to_xy, product):
+  if product not in producer:
+    return {}
+  field_size = field.get_size(from_xy, to_xy)
+  cost = get_cost(producer[product])
+  for item in cost:
+    cost[item] *= field_size
+  return cost
+
+def can_afford_field(from_xy, to_xy, product, assignments):
+  field_cost = get_field_cost(from_xy, to_xy, product)
+  if len(field_cost) == 0:
+    return True
+  growing_same_product = 0
+  for i in assignments:
+    if assignments[i][0] == product:
+      growing_same_product += 1
+  for item in field_cost:
+    if num_items(item) < field_cost[item] * (growing_same_product + 1):
+      return False
+  return True
+
 def currently_growing(product, assignments):
   for i in assignments:
     p, d = assignments[i]
@@ -37,6 +59,8 @@ def currently_growing(product, assignments):
 
 def check_constraints(index, product, from_xy, to_xy, assignments):
   if product not in product_task and product not in producer:
+    return False
+  if not can_afford_field(from_xy, to_xy, product, assignments):
     return False
   if product == Items.Power:
     return not currently_growing(Items.Power, assignments)
@@ -85,9 +109,13 @@ def loop(assignments):
         maze.init_and_run()
 
 def main():
+  last_priorities = None
   assignments = {}
   while True:
-    quick_print(plan.get_priorities())
+    # This is just for printing, we'll recheck on the fly in the loop
+    priorities = plan.get_priorities()
+    if priorities != last_priorities:
+      quick_print(priorities)
     loop(assignments)
 
 main()

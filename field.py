@@ -5,7 +5,7 @@ import plan
 
 def get_subfield_stats(margin = 0):
     ws = get_world_size()
-    repeats = ((max_drones() ** 0.5) // 1) + 1
+    repeats = ((max_drones() ** 0.5) // 1) # + 1
     spacing = ws // repeats
     return {
       "repeats": repeats,
@@ -41,6 +41,9 @@ def index_to_row_column_repeats(index):
   row = index // repeats
   column = index - (row * repeats)
   return row, column, repeats
+
+def get_size(from_xy, to_xy):
+  return abs(from_xy[0] - to_xy[0]) * abs(from_xy[1] - to_xy[1])
 
 def get_adjacency(x, y):
   return ((x % 2) + (y % 2)) % 2
