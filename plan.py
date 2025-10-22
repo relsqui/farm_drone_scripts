@@ -9,6 +9,9 @@ min_required = {
   Items.Power: 200
 }
 
+# Stock some up before we go burning it on mazes
+preferred_power = 1000
+
 # Prioritize stocking basics first to enable the rest
 item_priority = [Items.Power, Items.Hay, Items.Wood, Items.Carrot]
 

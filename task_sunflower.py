@@ -1,7 +1,6 @@
 import drone
 import field
 import nav
-import plan
 
 def plant_sunflower(state):
     field.plant_if_necessary(Entities.Sunflower)
@@ -11,7 +10,8 @@ def plant_sunflower(state):
     state["sizes"][petals].append((get_pos_x(), get_pos_y()))
 
 def harvest_sunflowers(state):
-    while num_items(Items.Power) < 2 * plan.min_required[Items.Power]:
+    # while num_items(Items.Power) < 3 * plan.min_required[Items.Power]:
+    while len(state["sizes"]) > 0:
         max_petals = max(list(state["sizes"]))
         for pos in state["sizes"][max_petals]:
             x, y = pos
@@ -22,7 +22,7 @@ def harvest_sunflowers(state):
             state["sizes"][max_petals].remove(pos)
             if len(state["sizes"][max_petals]) == 0:
                 state["sizes"].pop(max_petals)
-            plant_sunflower(state)
+            # plant_sunflower(state)
 
 def make_sunflower_task(from_xy, to_xy):
     return drone.make_area_task({

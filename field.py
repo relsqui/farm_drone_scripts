@@ -43,12 +43,19 @@ def index_to_row_column_repeats(index):
   column = index - (row * repeats)
   return row, column, repeats
 
-def get_adjacency(index):
+def get_adjacency(x, y):
+  return ((x % 2) + (y % 2)) % 2
+
+def get_index_adjacency(index):
   # Given a subfield index, return 0 or 1 such that
   # subfields assigned 0 and 1 make a checkerboard
   # (Assumes world size hasn't changed)
   row, column, _ = index_to_row_column_repeats(index)
-  return ((column % 2) + (row % 2)) % 2
+  return get_adjacency(row, column)
+
+def get_pos_adjacency():
+  # Like the above but for coordinates
+  return get_adjacency(get_pos_x(), get_pos_y())
 
 def is_square(from_xy, to_xy):
   return from_xy[0] - to_xy[0] == from_xy[1] - to_xy[1]
