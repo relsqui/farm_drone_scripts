@@ -2,15 +2,16 @@ import upgrade
 
 # How much buffer do we want to keep in stock?
 # (How much can we burn through between product checks)
+# TODO: Calculate this? Or at least estimate it
 min_required = {
-  Items.Carrot: 1000,
-  Items.Hay: 1000,
-  Items.Wood: 1000,
-  Items.Power: 200
+  Items.Carrot: 10000,
+  Items.Hay: 10000,
+  Items.Wood: 10000,
+  Items.Power: 1000
 }
 
 # Stock some up before we go burning it on mazes
-preferred_power = 1000
+preferred_power = min_required[Items.Power] * 5
 
 # Prioritize stocking basics first to enable the rest
 item_priority = [Items.Power, Items.Hay, Items.Wood, Items.Carrot]

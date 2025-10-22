@@ -87,6 +87,7 @@ def loop(assignments):
 def main():
   assignments = {}
   while True:
+    quick_print(plan.get_priorities())
     loop(assignments)
 
 main()
