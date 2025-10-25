@@ -35,8 +35,7 @@ base_task = {
   "start_fn": noop,
   "task_fn": noop,
   "end_fn": noop,
-  "continue_fn": return_false,
-  "break_fn": return_false,
+  "continue_fn": return_false
 }
 
 def normalize_task_def(task_options):
@@ -55,18 +54,16 @@ def make_area_task(task_options):
 
   def task():
     while True:
-      nav.go_to(x0, y0)
+      nav.go_to((x0, y0))
       task_def["start_fn"](state)
       dir = East
       for _y in range(y1 - y0 + 1):
-        if task_def["break_fn"](state):
+        if task_def["task_fn"](state):
           break
-        task_def["task_fn"](state)
         for _x in range(x1 - x0):
-          if task_def["break_fn"](state):
-            break
           move(dir)
-          task_def["task_fn"](state)
+          if task_def["task_fn"](state):
+            break
         dir = nav.opposite[dir]
         move(North)
       if not task_def["continue_fn"](state):

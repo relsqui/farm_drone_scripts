@@ -42,6 +42,9 @@ def index_to_row_column_repeats(index):
   column = index - (row * repeats)
   return row, column, repeats
 
+def get_pos():
+  return (get_pos_x(), get_pos_y())
+
 def get_size(from_xy, to_xy):
   return abs(from_xy[0] - to_xy[0]) * abs(from_xy[1] - to_xy[1])
 

@@ -21,7 +21,8 @@ opposite = {
   East: West
 }
 
-def go_to(to_x, to_y):
+def go_to(pos):
+  to_x, to_y = pos
   ws = get_world_size()
   from_x, from_y = get_pos_x(), get_pos_y()
   if from_x - to_x > 0 and (from_x - to_x) < ws/2:
@@ -38,4 +39,4 @@ def go_to(to_x, to_y):
     move(long_dir)
 
 def go_origin():
-  go_to(0, 0)
+  go_to((0, 0))

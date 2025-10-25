@@ -9,10 +9,10 @@ def plant_pumpkin(state):
 def check_pumpkins(state):
     while len(state["to_check"]) > 0:
         check_next = []
-        for x, y in state["to_check"]:
-            nav.go_to(x, y)
+        for pos in state["to_check"]:
+            nav.go_to(pos)
             if field.plant_if_necessary(Entities.Pumpkin) or not can_harvest():
-                check_next.append((x, y))
+                check_next.append(pos)
         state["to_check"] = check_next
     harvest()
 
